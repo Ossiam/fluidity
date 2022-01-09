@@ -2,17 +2,19 @@ import React from 'react';
 import styled from "@emotion/styled";
 import * as Settings from "../Settings/settingsHandler";
 
-import { searchSettings as defaultSettings } from "../../data/data";
 import google from "../../data/pictures/google.svg";
 import duckduckgo from "../../data/pictures/duckduckgo.svg";
 import qwant from "../../data/pictures/qwant.svg";
 
 const StyledSearchbarContainer = styled.div`
-    position: fixed;
-    left: 100px;
-    right: 50px;
+    position: absolute;
+    left: calc(100px - 2.9rem - 10px);
+    right: 100px;
     bottom: 40px;
     height:min-content;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
     `;
 const StyledSearchbar = styled.input`
     width: 100%;
@@ -36,32 +38,28 @@ const StyledSearchbar = styled.input`
 `;
 
 const SearchIcon = styled.div<{ src: string }>`
-    position: fixed;
-    left: 35px;
-    bottom: 40px;
     height: 2.9rem;
-    width: 2.9rem;
+    width: 3.1rem;
+    margin: auto 10px auto 0;
 
     background: var(--default-color);
     
-    -webkit-mask-size: cover;
     mask-size: cover;
-    -webkit-mask-image: url(${({ src }) => src});
     mask-image: url(${({ src }) => src});
 `;
 
 export const Searchbar = () => {
-    const searchSettings = Settings.Search.get() || defaultSettings;
+    const searchSettings = Settings.Search.getWithFallback();
     const engine: string = searchSettings?.engine || "duckduckgo.com/";
 
-    let searchSymbol = duckduckgo
+    let searchSymbol = duckduckgo;
     if (engine.startsWith("google"))
         searchSymbol = google;
     else if (engine.startsWith("qwant"))
         searchSymbol = qwant;
 
     const redirectToSearch = (query: string) => {
-        if (searchSettings.fastForward[query])
+        if (searchSettings?.fastForward[query])
             window.location.href = searchSettings.fastForward[query];
         else
             window.location.href = "https://" + engine + "?q=" + query;
@@ -69,13 +67,13 @@ export const Searchbar = () => {
 
     return (
         <StyledSearchbarContainer>
+            <SearchIcon src={searchSymbol} />
             <StyledSearchbar
                 placeholder="Always stay clean!"
                 type="input"
                 onKeyUp={e => e.which === 13 && redirectToSearch(e.currentTarget.value)}
                 autoFocus={true}
             />
-            <SearchIcon src={searchSymbol} />
         </StyledSearchbarContainer>
     );
 }

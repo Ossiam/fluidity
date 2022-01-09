@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from '@emotion/styled';
 
-import { changelog, ChangelogVersion } from "../../../../data/changelog"
-import logo from "../../../../data/pictures/logo.png"
+import { changelog, ChangelogVersion } from "../../../data/changelog"
+import logo from "../../../data/pictures/logo.png"
 
 const ChangelogWrapper = styled.div`
     width: 100%;
@@ -20,10 +20,13 @@ const ChangelogWrapper = styled.div`
     }
 `;
 const StyledVersion = styled.div`
-    width:600px;
+    width: 600px;
     > p {
         margin-bottom: 10px;
     }
+`;
+const ChangeItem = styled.li`
+    white-space: nowrap;
 `;
 
 export const Changelog = () => {
@@ -40,6 +43,6 @@ const Version = ({ version, description, changes }: ChangelogVersion) => {
         <h2>v{version}</h2>
         {description && <p>{description}</p>}
         {changes && <p>Changes:</p>}
-        {changes?.map((change) => <li>{change}</li>)}
+        {changes?.map((change) => <ChangeItem>{change}</ChangeItem>)}
     </StyledVersion>
 }
